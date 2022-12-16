@@ -208,5 +208,4 @@ nei = findCatCode(sjekketCat, 'nei')
 print(f"{nei} = Nei\n"+
       f"{ja} = Ja")
 
-
 print(model.predict(tester))
