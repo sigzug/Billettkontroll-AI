@@ -62,11 +62,11 @@ def predict():
     nei = findCatCode(sjekketCat, 'nei')
 
     if prediction[0] == ja:
-        output = "Ja, det er en sannsynlighet for å bli kontrollert"
+        output = "Ja, det er sannsynlig for å bli kontrollert"
     else:
         output = "Nei, det er liten sannsynlighet for å bli kontrollert"
 
-    return render_template('index.html', prediction_text=f"The models predicts: {output}")
+    return render_template('index.html', prediction_text=f"The models says: {output}")
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
