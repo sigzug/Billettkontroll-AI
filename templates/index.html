@@ -10,24 +10,72 @@
     <title>Billettkontroll</title>
 </head>
 <body>
-    <div class="login">
-        <h1>Billettkontroll prediction</h1>
-        <p>Alpha 1</p>
-        <form action="{{url_for('predict')}}" method="post">
-            <input type="text" name="linje" placeholder="Linje" required="required">
-            <!--<input type="text" name="vogn" placeholder="vogn" required="required">-->
-            <input type="text" name="fra" placeholder="fra" required="required">
-            <input type="text" name="til" placeholder="til" required="required">
-            <input type="text" name="fullt" placeholder="fullt" required="required">
-            <input type="text" name="dag" placeholder="dag" required="required">
-            <input type="text" name="måned" placeholder="måned" required="required">
-            <input type="text" name="time" placeholder="time" required="required">
-            <input type="text" name="minutt" placeholder="minutt" required="required">
-
-            <button type="submit" class="btn btn-primary">Predict</button>
-        </form>
-
-        <h4 style="color:Blue;">{{ prediction_text }}</h4>
+    <div class="container">
+        <div class="text-center">
+            <h1>Billettkontroll prediction</h1>
+            <p>Alpha 1</p>
+         </div>
+        <div class="row justify-content-center my-5">
+            <div class="col-lg-6">
+                <form action="{{url_for('predict')}}" method="post">
+                    <div class="form-group">
+                        <label for="linje" class="form-label">Linje</label>
+                        <input type="text" class="form-control" name="linje" id="linje" placeholder="R10, R11, L12, ..." required="required">
+                        <!--<select class="form-select" id="subject">
+                            <option value="">R10, R11, ...</option>
+                            <option value="r10">R10</option>
+                            <option value="r11">R11</option>
+                            <option value="l12">L12</option>
+                            <option value="l14">L14</option>
+                        </select>-->
+                    </div>
+        
+                    <!--<input type="text" name="vogn" placeholder="vogn" required="required">-->
+                    
+                    <div class="form-group">
+                        <label for="fra" class="form-label">Fra</label>
+                        <input type="text" class="form-control" name="fra" id="fra" placeholder="Eidsvoll, Oslo S, ..." required="required">
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="til" class="form-label">Til</label>
+                        <input type="text" class="form-control" name="til" id="til" placeholder="Nationaltheateret, Skarnes, ..." required="required">
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="fullt" class="form-label">Fullt?</label>
+                        <input type="text" class="form-control" name="fullt" id="fullt" placeholder="Fullt?" required="required">
+                    </div>
+        
+                    <div>
+                        <label for="dag" class="form-label">Dag</label>
+                        <input type="text" class="form-control" name="dag" id="dag" placeholder="Dag" required="required">
+                    </div>
+        
+                    <div>
+                        <label for="måned" class="form-label">Måned</label>
+                        <input type="text" class="form-control" name="måned" id="måned" placeholder="Måned" required="required">
+                    </div>
+        
+                    <div>
+                        <label for="time" class="form-label">Time</label>
+                        <input type="text" class="form-control" name="time" id="time" placeholder="Time" required="required">
+                    </div>
+        
+                    <div>
+                        <label for="minutt" class="form-label">Minutt</label>
+                        <input type="text" class="form-control" name="minutt" id="minutt" placeholder="Minutt" required="required">
+                    </div>
+        
+                    <div class="mt-4 text-center">
+                        <button type="submit" class="btn btn-primary">Predict</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <h4 style="color:Blue;">{{ prediction_text }}</h4>
+            </div>
+        </div>
     </div>
 </body>
 </html>
