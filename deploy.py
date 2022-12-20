@@ -4,7 +4,7 @@ from flask import Flask, request, render_template
 import pickle as pk
 
 
-def findCatCode(l, x: str) -> int:
+def findCatCode(l, x: str):
     for i in range(len(l)):
         if l[i] == x:
             code = l.codes[i]
@@ -41,14 +41,14 @@ def predict():
     int_features = [strCleaner(x) for x in request.form.values()]
 
     data = {"Linje": [findCatCode(linjeCat, int_features[0])], 
-          "Vogn": [findCatCode(vognCat, int_features[1])],
-          "Fra": [findCatCode(fraCat, int_features[2])], 
-          "Til": [findCatCode(tilCat, int_features[3])], 
-         "Fullt?": [findCatCode(fulltCat, int_features[4])],
-         "Dag": [int_features[5]],
-         "Måned": [int_features[6]],
-         "Time": [int_features[7]],
-         "Minutt": [int_features[8]]}
+          #"Vogn": [findCatCode(vognCat, int_features[1])],
+          "Fra": [findCatCode(fraCat, int_features[1])], 
+          "Til": [findCatCode(tilCat, int_features[2])], 
+         "Fullt?": [findCatCode(fulltCat, int_features[3])],
+         "Dag": [int_features[4]],
+         "Måned": [int_features[5]],
+         "Time": [int_features[6]],
+         "Minutt": [int_features[7]]}
     
     X_test = pk.load(open('./categories/X_test.pkl', 'rb'))
     tester = X_test
@@ -69,4 +69,4 @@ def predict():
     return render_template('index.html', prediction_text=f"The models predicts: {output}")
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True, host='0.0.0.0')
