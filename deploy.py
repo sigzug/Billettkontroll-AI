@@ -68,5 +68,14 @@ def predict():
 
     return render_template('index.html', prediction_text=f"The models says: {output}")
 
+
+@app.route('/linje', methods=['GET'])
+def getLinje():
+    linjeCat = pk.load(open("./categories/linjeCat.pkl", 'rb'))
+    linjer = list(linjeCat.categories)
+    return render_template('index.html', linje_list=linjer)
+    
+    
+
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port='8080')

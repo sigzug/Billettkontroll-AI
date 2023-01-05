@@ -13,21 +13,19 @@
     <div class="container">
         <div class="text-center">
             <h1>Billettkontroll prediction</h1>
-            <p>Alpha 1</p>
+            <p>Alpha 2</p>
          </div>
         <div class="row justify-content-center my-5">
             <div class="col-lg-6">
                 <form action="{{url_for('predict')}}" method="post">
                     <div class="form-group">
                         <label for="linje" class="form-label">Linje</label>
-                        <input type="text" class="form-control" name="linje" id="linje" placeholder="R10, R11, L12, ..." required="required">
-                        <!--<select class="form-select" id="subject">
-                            <option value="">R10, R11, ...</option>
-                            <option value="r10">R10</option>
-                            <option value="r11">R11</option>
-                            <option value="l12">L12</option>
-                            <option value="l14">L14</option>
-                        </select>-->
+                        <!--<input type="text" class="form-control" name="linje" id="linje" placeholder="R10, R11, L12, ..." required="required">-->
+                        <select>
+                            {% for element in linje_list %}
+                                <option value="{{ element }}">{{ element }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
         
                     <!--<input type="text" name="vogn" placeholder="vogn" required="required">-->
