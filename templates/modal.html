@@ -1,0 +1,29 @@
+{% extends 'index.html' %}
+{% block modal %}
+<!-- Modal -->
+<div class="modal fade" id="modelModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Model result</h1>
+        </div>
+        <div class="modal-body">
+          {{ modal_text }}
+        </div>
+        <div class="modal-footer">
+          <a href="{{url_for("home")}}" class="btn btn-secondary">Close</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block script %}
+<script>
+$(document).ready(function(){
+    console.log("Modal loaded");
+    $("#modelModal").modal("show");
+});
+</script>
+{% endblock %}
+
+

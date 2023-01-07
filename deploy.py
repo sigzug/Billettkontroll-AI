@@ -30,10 +30,23 @@ app = Flask(__name__)
 
 model = pk.load(open('./models/model.pkl', 'rb'))
 
+def getLinjer():
+    linjeCat = pk.load(open("./categories/linjeCat.pkl", 'rb'))
+    linjer = list(linjeCat.categories)
+    linjer = [l.upper() for l in linjer]
+     
+    return linjer   
+    #return render_template('index.html', linje_list=linjer)
+
+def getCats():
+    linjer = getLinjer()
+    
+    return render_template('index.html', linje_list=linjer)
+
 @app.route('/')
 def home():
-    return render_template('index.html')
-
+    return getCats()
+    #return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -65,16 +78,13 @@ def predict():
         output = "Ja, det er sannsynlig for å bli kontrollert"
     else:
         output = "Nei, det er liten sannsynlighet for å bli kontrollert"
-
-    return render_template('index.html', prediction_text=f"The models says: {output}")
-
-
-@app.route('/linje', methods=['GET'])
-def getLinje():
-    linjeCat = pk.load(open("./categories/linjeCat.pkl", 'rb'))
-    linjer = list(linjeCat.categories)
-    return render_template('index.html', linje_list=linjer)
     
+    return render_template('modal.html', modal_text=output)
+    #return render_template('index.html', prediction_text=f"The models says: {output}")
+    
+@app.route('/modal')
+def modal():
+    return render_template('modal.html', modal_text='Hello World!')
     
 
 if __name__ == "__main__":
