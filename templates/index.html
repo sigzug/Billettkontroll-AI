@@ -27,6 +27,7 @@
                         <label for="linje" class="form-label">Linje</label>
                         <!--<input type="text" class="form-control" name="linje" id="linje" placeholder="R10, R11, L12, ..." required="required">-->
                         <select name="linje" id="linje" class="selectpicker form-control" required="required">
+                            <option value="" disabled selected>L12, R10, R11 ...</option>
                             {% for linje in linje_list %}
                                 <option value="{{ linje }}">{{ linje }}</option>
                             {% endfor %}
@@ -37,37 +38,44 @@
                     
                     <div class="form-group">
                         <label for="fra" class="form-label">Fra</label>
-                        <input type="text" class="form-control" name="fra" id="fra" placeholder="Eidsvoll, Oslo S, ..." required="required">
+                        <!--<input type="text" class="form-control" name="fra" id="fra" placeholder="Eidsvoll, Oslo S, ..." required="required">-->
+                        <select name="fra" id="fra" class="selectpicker form-control" required="required">
+                            <option value="" disabled selected>Eidsvoll, Oslo S ...</option>
+                            {% for fra in fra_list %}
+                                <option value="{{ fra }}">{{ fra }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
         
                     <div class="form-group">
                         <label for="til" class="form-label">Til</label>
-                        <input type="text" class="form-control" name="til" id="til" placeholder="Nationaltheateret, Skarnes, ..." required="required">
+                        <!--<input type="text" class="form-control" name="til" id="til" placeholder="Nationaltheateret, Skarnes, ..." required="required">-->
+                        <select name="til" id="til" class="selectpicker form-control" required="required">
+                            <option value="" disabled selected>Skarnes, Nationaltheateret ...</option>
+                            {% for til in til_list %}
+                                <option value="{{ til }}">{{ til }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
         
                     <div class="form-group">
                         <label for="fullt" class="form-label">Fullt?</label>
-                        <input type="text" class="form-control" name="fullt" id="fullt" placeholder="Fullt?" required="required">
+                        <!--<input type="text" class="form-control" name="fullt" id="fullt" placeholder="Fullt?" required="required">-->
+                        <select name="fullt" id="fullt" class="selectpicker form-control" required="required">
+                            <option value="" disabled selected>Velg Ja eller Nei</option>
+                            <option value="ja">Ja</option>
+                            <option value="nei">Nei</option>
+                        </select>
                     </div>
         
                     <div>
-                        <label for="dag" class="form-label">Dag</label>
-                        <input type="text" class="form-control" name="dag" id="dag" placeholder="Dag" required="required">
+                        <label for="dato" class="form-label">Dato</label>
+                        <input type="date" class="form-control" name="dato" id="dato" required="required">
                     </div>
         
                     <div>
-                        <label for="måned" class="form-label">Måned</label>
-                        <input type="text" class="form-control" name="måned" id="måned" placeholder="Måned" required="required">
-                    </div>
-        
-                    <div>
-                        <label for="time" class="form-label">Time</label>
-                        <input type="text" class="form-control" name="time" id="time" placeholder="Time" required="required">
-                    </div>
-        
-                    <div>
-                        <label for="minutt" class="form-label">Minutt</label>
-                        <input type="text" class="form-control" name="minutt" id="minutt" placeholder="Minutt" required="required">
+                        <label for="tid" class="form-label">Tid</label>
+                        <input type="time" class="form-control" name="tid" id="tid" required="required">
                     </div>
         
                     <div class="mt-4 text-center">

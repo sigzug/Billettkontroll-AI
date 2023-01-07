@@ -31,17 +31,39 @@ app = Flask(__name__)
 model = pk.load(open('./models/model.pkl', 'rb'))
 
 def getLinjer():
-    linjeCat = pk.load(open("./categories/linjeCat.pkl", 'rb'))
     linjer = list(linjeCat.categories)
     linjer = [l.upper() for l in linjer]
      
     return linjer   
     #return render_template('index.html', linje_list=linjer)
 
-def getCats():
-    linjer = getLinjer()
+
+def getFra():
+    fraList = list(fraCat.categories)
+    fraList = [f.replace("_", " ") for f in fraList]
+    fraList = [f.capitalize() for f in fraList]
     
-    return render_template('index.html', linje_list=linjer)
+    return fraList
+
+def getTil():
+    tilList = list(tilCat.categories)
+    tilList = [t.replace("_", " ") for t in tilList]
+    tilList = [t.capitalize() for t in tilList]
+    
+    return tilList
+
+def getCats():
+    """Gets all the categories from the cat-files and return a render_template
+
+    Returns:
+        render_template with all variables for lists
+    """
+    
+    linjer = getLinjer()
+    fraList = getFra()
+    tilList = getTil()
+    
+    return render_template('index.html', linje_list=linjer, fra_list=fraList, til_list=tilList)
 
 @app.route('/')
 def home():
@@ -51,17 +73,17 @@ def home():
 @app.route('/predict', methods=['POST'])
 def predict():
 
-    int_features = [strCleaner(x) for x in request.form.values()]
+    form_values = [strCleaner(x) for x in request.form.values()]
 
-    data = {"Linje": [findCatCode(linjeCat, int_features[0])], 
+    data = {"Linje": [findCatCode(linjeCat, form_values[0])], 
           #"Vogn": [findCatCode(vognCat, int_features[1])],
-          "Fra": [findCatCode(fraCat, int_features[1])], 
-          "Til": [findCatCode(tilCat, int_features[2])], 
-         "Fullt?": [findCatCode(fulltCat, int_features[3])],
-         "Dag": [int_features[4]],
-         "Måned": [int_features[5]],
-         "Time": [int_features[6]],
-         "Minutt": [int_features[7]]}
+          "Fra": [findCatCode(fraCat, form_values[1])], 
+          "Til": [findCatCode(tilCat, form_values[2])], 
+         "Fullt?": [findCatCode(fulltCat, form_values[3])],
+         "Dag": [form_values[4]],
+         "Måned": [form_values[5]],
+         "Time": [form_values[6]],
+         "Minutt": [form_values[7]]}
     
     X_test = pk.load(open('./categories/X_test.pkl', 'rb'))
     tester = X_test
@@ -86,6 +108,13 @@ def predict():
 def modal():
     return render_template('modal.html', modal_text='Hello World!')
     
+# Need to be addressed
+# Same with the clock input
+@app.route('/date')
+def datoTest():
+    form = [strCleaner(x) for x in request.form.values()]
+    print(form)
+    return render_template('index.html')
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port='8080')
