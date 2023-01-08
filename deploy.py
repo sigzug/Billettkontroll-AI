@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 import pickle as pk
 
 
@@ -30,6 +30,7 @@ app = Flask(__name__)
 
 model = pk.load(open('./models/model.pkl', 'rb'))
 
+# Gets the categorical data form the model testing
 def getLinjer():
     linjer = list(linjeCat.categories)
     linjer = [l.upper() for l in linjer]
@@ -65,6 +66,28 @@ def getCats():
     
     return render_template('index.html', linje_list=linjer, fra_list=fraList, til_list=tilList)
 
+def dateSeparater(date: str):
+    """
+    Separates a date string from JSON-object to month and date in int.
+
+    Args:
+        date (str): The date string from JSON
+
+    Returns:
+        month: Month in int format
+        day: Day in int format
+    """
+    date = date[5:]
+    month = int(date[:2])
+    day = int(date[3:])
+    return month, day
+
+def timeSeparater(time: str):
+    hour = int(time[:2])
+    minute = int(time[3:])
+    
+    return hour, minute
+
 @app.route('/')
 def home():
     return getCats()
@@ -75,15 +98,21 @@ def predict():
 
     form_values = [strCleaner(x) for x in request.form.values()]
 
+    month, day = dateSeparater(form_values[4])
+    hour, minute = timeSeparater(form_values[5])
+    
     data = {"Linje": [findCatCode(linjeCat, form_values[0])], 
           #"Vogn": [findCatCode(vognCat, int_features[1])],
           "Fra": [findCatCode(fraCat, form_values[1])], 
           "Til": [findCatCode(tilCat, form_values[2])], 
          "Fullt?": [findCatCode(fulltCat, form_values[3])],
-         "Dag": [form_values[4]],
-         "Måned": [form_values[5]],
-         "Time": [form_values[6]],
-         "Minutt": [form_values[7]]}
+         "Dag": [day],
+         "Måned": [month],
+         "Time": [hour],
+         "Minutt": [minute]}
+    
+    if app.debug:
+        print(data)
     
     X_test = pk.load(open('./categories/X_test.pkl', 'rb'))
     tester = X_test
@@ -94,7 +123,7 @@ def predict():
     prediction = model.predict(tester)
 
     ja = findCatCode(sjekketCat, 'ja')
-    nei = findCatCode(sjekketCat, 'nei')
+    #nei = findCatCode(sjekketCat, 'nei')
 
     if prediction[0] == ja:
         output = "Ja, det er sannsynlig for å bli kontrollert"
@@ -104,17 +133,32 @@ def predict():
     return render_template('modal.html', modal_text=output)
     #return render_template('index.html', prediction_text=f"The models says: {output}")
     
+    
+    
+    
+# TESTING
 @app.route('/modal')
 def modal():
     return render_template('modal.html', modal_text='Hello World!')
     
-# Need to be addressed
-# Same with the clock input
-@app.route('/date')
+@app.route('/date', methods=['POST'])
 def datoTest():
-    form = [strCleaner(x) for x in request.form.values()]
-    print(form)
-    return render_template('index.html')
+    date = request.form.get('date')
+    # Removes year
+    date = date[5:]
+    
+    month = int(date[:2])
+    day = int(date[3:])
+    print(f"Date: {date}\nMonth: {month}\nDay: {day}")
+    return redirect(url_for('home'))
+
+@app.route('/time', methods=['POST'])
+def timeTest():
+    time = request.form.get('time')
+    print(time)
+    
+    return redirect(url_for('home'))
+    
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port='8080')
