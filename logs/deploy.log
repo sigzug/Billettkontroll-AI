@@ -1,0 +1,5 @@
+werkzeug - WARNING -  * Debugger is active!
+werkzeug - INFO -  * Debugger PIN: 558-001-570
+werkzeug - INFO - 127.0.0.1 - - [08/Jan/2023 20:18:00] "GET / HTTP/1.1" 200 -
+root - DEBUG - Loaded /modal successfully.
+werkzeug - INFO - 127.0.0.1 - - [08/Jan/2023 20:18:04] "GET /modal HTTP/1.1" 200 -

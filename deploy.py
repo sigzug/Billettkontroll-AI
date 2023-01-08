@@ -1,8 +1,27 @@
 import numpy as np
 import pandas as pd
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, Response
 import pickle as pk
+import logging
 
+debug_mode: bool = True
+
+if debug_mode:
+    logging.basicConfig(level=logging.DEBUG,
+                        filename='./logs/deploy.log', 
+                        filemode='w', 
+                        format='%(name)s - %(levelname)s - %(message)s') 
+
+linjeCat = pk.load(open('./categories/linjeCat.pkl', 'rb'))
+vognCat = pk.load(open('./categories/vognCat.pkl', 'rb'))
+fraCat = pk.load(open('./categories/fraCat.pkl', 'rb'))
+tilCat = pk.load(open('./categories/tilCat.pkl', 'rb'))
+fulltCat = pk.load(open('./categories/fulltCat.pkl', 'rb'))
+sjekketCat = pk.load(open('./categories/sjekketCat.pkl', 'rb'))
+
+app = Flask(__name__)
+
+model = pk.load(open('./models/model.pkl', 'rb'))   
 
 def findCatCode(l, x: str):
     for i in range(len(l)):
@@ -18,17 +37,6 @@ def strCleaner(x: str) -> str:
         return "ja"
 
     return x
-
-linjeCat = pk.load(open('./categories/linjeCat.pkl', 'rb'))
-vognCat = pk.load(open('./categories/vognCat.pkl', 'rb'))
-fraCat = pk.load(open('./categories/fraCat.pkl', 'rb'))
-tilCat = pk.load(open('./categories/tilCat.pkl', 'rb'))
-fulltCat = pk.load(open('./categories/fulltCat.pkl', 'rb'))
-sjekketCat = pk.load(open('./categories/sjekketCat.pkl', 'rb'))
-
-app = Flask(__name__)
-
-model = pk.load(open('./models/model.pkl', 'rb'))
 
 # Gets the categorical data form the model testing
 def getLinjer():
@@ -111,8 +119,8 @@ def predict():
          "Time": [hour],
          "Minutt": [minute]}
     
-    if app.debug:
-        print(data)
+    if debug_mode:
+        print(f"Data: \n{data}\n")
     
     X_test = pk.load(open('./categories/X_test.pkl', 'rb'))
     tester = X_test
@@ -135,30 +143,44 @@ def predict():
     
     
     
-    
+
 # TESTING
 @app.route('/modal')
 def modal():
-    return render_template('modal.html', modal_text='Hello World!')
+    if debug_mode:
+        logging.debug("Loaded /modal successfully.")
+        return render_template('modal.html', modal_text='Hello World!')
+    else:
+        logging.error("Unauthorized access")
+        return Response("Unauthorized!", status=405, mimetype='application/json')
     
 @app.route('/date', methods=['POST'])
 def datoTest():
-    date = request.form.get('date')
-    # Removes year
-    date = date[5:]
-    
-    month = int(date[:2])
-    day = int(date[3:])
-    print(f"Date: {date}\nMonth: {month}\nDay: {day}")
-    return redirect(url_for('home'))
+    if debug_mode:
+        date = request.form.get('date')
+        # Removes year
+        date = date[5:]
+
+        month = int(date[:2])
+        day = int(date[3:])
+        print(f"Date: {date}\nMonth: {month}\nDay: {day}")
+        return redirect(url_for('home'))
+    else:
+        logging.error("Unauthorized access")
+        return Response("Unauthorized!", status=405, mimetype='application/json')
 
 @app.route('/time', methods=['POST'])
 def timeTest():
-    time = request.form.get('time')
-    print(time)
+    if debug_mode:
+        time = request.form.get('time')
+        print(time)
+        
+        return redirect(url_for('home'))
+    else:
+        logging.error("Unauthorized access")
+        return Response("Unauthorized!", status=405, mimetype='application/json')
     
-    return redirect(url_for('home'))
     
-
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port='8080')
+    app.run(debug=debug_mode, host='0.0.0.0', port='8080')
+    
