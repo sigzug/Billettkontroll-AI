@@ -173,3 +173,8 @@ def datadict_to_DataFrame(data: dict) -> pd.DataFrame:
     testdb = pd.DataFrame(data)
     tester = pd.concat([tester, testdb])
     return tester
+
+def load_accuracy():
+    best_accuracy = pk.load(open('./accuracy/best_accuracy.pkl', 'rb'))
+    best_accuracy = f"{best_accuracy * 100 : .2f}"
+    return best_accuracy

@@ -13,12 +13,13 @@ if debug_mode:
 
 app = Flask(__name__)
 
-model = pk.load(open('./models/model.pkl', 'rb'))   
+model = pk.load(open('./models/best_model.pkl', 'rb'))   
 
 @app.route('/')
 def home():
     linjer, fraList, tilList = getCats()
-    return render_template('index.html', linje_list=linjer, fra_list=fraList, til_list=tilList)
+    best_accuracy = load_accuracy()
+    return render_template('index.html', linje_list=linjer, fra_list=fraList, til_list=tilList, best_accuracy=best_accuracy)
     #return render_template('index.html')
     
 
