@@ -18,7 +18,7 @@
     <div class="container">
         <div class="text-center">
             <h1>Billettkontroll prediction</h1>
-            <p>Alpha 2.1</p>
+            <p>Alpha 2.2</p>
             <p>Den beste modellen er nå {{ best_accuracy }}% nøyaktig.</p>
          </div>
         <div class="row justify-content-center my-5">
@@ -64,8 +64,9 @@
                         <!--<input type="text" class="form-control" name="fullt" id="fullt" placeholder="Fullt?" required="required">-->
                         <select name="fullt" id="fullt" class="selectpicker form-control" required="required">
                             <option value="" disabled selected>Velg Ja eller Nei</option>
-                            <option value="ja">Ja</option>
-                            <option value="nei">Nei</option>
+                            {% for fullt in fullt_list %}
+                                <option value="{{ fullt }}">{{ fullt }}</option>
+                            {% endfor %}
                         </select>
                     </div>
         

@@ -9,10 +9,11 @@ tilCat = pk.load(open('./categories/tilCat.pkl', 'rb'))
 fulltCat = pk.load(open('./categories/fulltCat.pkl', 'rb'))
 sjekketCat = pk.load(open('./categories/sjekketCat.pkl', 'rb'))
 
+
 # Formatting and returning categories
 def getLinjer():
     """
-    Converts linjer Categorical to list and formats to frontend.
+    Converts "linjer" Categorical to list and formats to frontend.
     """
     
     linjer = list(linjeCat.categories)
@@ -21,9 +22,10 @@ def getLinjer():
     return linjer   
     #return render_template('index.html', linje_list=linjer)
 
+
 def getFra():
     """
-    Converts fra Categorical to list and formats to frontend.
+    Converts "fra" Categorical to list and formats to frontend.
     """
     
     fraList = list(fraCat.categories)
@@ -32,9 +34,10 @@ def getFra():
     
     return fraList
 
+
 def getTil():
     """
-    Converts til Categorical to list and formats to frontend.
+    Converts "til" Categorical to list and formats to frontend.
     """
     
     tilList = list(tilCat.categories)
@@ -42,6 +45,19 @@ def getTil():
     tilList = [t.capitalize() for t in tilList]
     
     return tilList
+
+
+def getFullt():
+    """
+    Converts "fullt" Categorical to list and formats to frontend.
+    """
+
+    fulltList = list(fulltCat.categories)
+    fulltList = [f.replace("_", " ") for f in fulltList]
+    fulltList = [f.capitalize() for f in fulltList]
+
+    return fulltList
+
 
 def getCats():
     """
@@ -51,13 +67,16 @@ def getCats():
         linjer: Linjer in list
         fraList: Fra in list
         tilList: Til in list
+        fulltList: Fullt in list
     """
     
     linjer = getLinjer()
     fraList = getFra()
     tilList = getTil()
+    fulltList = getFullt()
 
-    return linjer, fraList, tilList
+
+    return linjer, fraList, tilList, fulltList
 
 
 # Finding cat index for string value
@@ -113,6 +132,7 @@ def dateSeparater(date: str):
     day = int(date[3:])
     return month, day
 
+
 def timeSeparater(time: str):
     """
     Separates hour and minute from clock string and converts to int.
@@ -156,6 +176,7 @@ def create_predict_data(form_values: list) -> dict:
     
     return data
 
+
 # Converting dict data to DataFrame
 def datadict_to_DataFrame(data: dict) -> pd.DataFrame:
     """
@@ -173,6 +194,7 @@ def datadict_to_DataFrame(data: dict) -> pd.DataFrame:
     testdb = pd.DataFrame(data)
     tester = pd.concat([tester, testdb])
     return tester
+
 
 def load_accuracy():
     best_accuracy = pk.load(open('./accuracy/best_accuracy.pkl', 'rb'))

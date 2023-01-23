@@ -1,6 +1,8 @@
+import logging
+
 from flask import Flask, Response, request, render_template, redirect, url_for
 import pickle as pk
-import logging
+
 from utils import *
 
 debug_mode: bool = True
@@ -17,9 +19,9 @@ model = pk.load(open('./models/best_model.pkl', 'rb'))
 
 @app.route('/')
 def home():
-    linjer, fraList, tilList = getCats()
+    linjer, fraList, tilList, fulltList = getCats()
     best_accuracy = load_accuracy()
-    return render_template('index.html', linje_list=linjer, fra_list=fraList, til_list=tilList, best_accuracy=best_accuracy)
+    return render_template('index.html', linje_list=linjer, fra_list=fraList, til_list=tilList, fullt_list=fulltList, best_accuracy=best_accuracy)
     #return render_template('index.html')
     
 
