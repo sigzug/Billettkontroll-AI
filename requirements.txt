@@ -1,7 +1,8 @@
 Flask
-Numpy
-Pandas
-xgboost==1.5.0
-scikit-learn
 optuna
+pandas
+scikit_learn
+sdv
+xgboost
+matplotlib
 openpyxl
