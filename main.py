@@ -5,9 +5,9 @@ import pickle as pk
 
 from utils import *
 
-debug_mode: bool = True
+DEBUG_MODE: bool = False
 
-if debug_mode:
+if DEBUG_MODE:
     logging.basicConfig(level=logging.DEBUG,
                         filename='./logs/deploy.log', 
                         filemode='w', 
@@ -33,7 +33,7 @@ def predict():
     # Putting data into dict
     data = create_predict_data(form_values)
     
-    if debug_mode:
+    if DEBUG_MODE:
         print(f"Data: \n{data}\n")
     
     # Converting dict to pandas DataFrame in trining data format
@@ -57,7 +57,7 @@ def predict():
 ######## TESTING ########
 @app.route('/modal')
 def modal():
-    if debug_mode:
+    if DEBUG_MODE:
         logging.debug("Loaded /modal successfully.")
         return render_template('modal.html', modal_text='Hello World!')
     else:
@@ -66,7 +66,7 @@ def modal():
     
 @app.route('/date', methods=['POST'])
 def datoTest():
-    if debug_mode:
+    if DEBUG_MODE:
         date = str(request.form.get('date'))
         
         # Removes the year from str
@@ -82,7 +82,7 @@ def datoTest():
 
 @app.route('/time', methods=['POST'])
 def timeTest():
-    if debug_mode:
+    if DEBUG_MODE:
         time = request.form.get('time')
         print(time)
         
@@ -94,5 +94,5 @@ def timeTest():
 ###################
 
 if __name__ == "__main__":
-    app.run(debug=debug_mode, host='0.0.0.0', port='8080')
+    app.run(debug=DEBUG_MODE, host='0.0.0.0', port='8080')
     
