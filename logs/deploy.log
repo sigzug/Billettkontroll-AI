@@ -1,4 +1,0 @@
-werkzeug - WARNING -  * Debugger is active!
-werkzeug - INFO -  * Debugger PIN: 128-329-004
-werkzeug - INFO - 127.0.0.1 - - [31/Jan/2023 20:30:22] "GET / HTTP/1.1" 200 -
-werkzeug - INFO - 127.0.0.1 - - [31/Jan/2023 20:30:22] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -

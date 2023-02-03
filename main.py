@@ -7,11 +7,10 @@ from utils import *
 
 DEBUG_MODE: bool = False
 
-if DEBUG_MODE:
-    logging.basicConfig(level=logging.DEBUG,
-                        filename='./logs/deploy.log', 
-                        filemode='w', 
-                        format='%(name)s - %(levelname)s - %(message)s') 
+logging.basicConfig(level=logging.DEBUG,
+                    filename='./logs/deploy.log', 
+                    filemode='w', 
+                    format='%(name)s - %(levelname)s - %(message)s') 
 
 app = Flask(__name__)
 
@@ -94,5 +93,5 @@ def timeTest():
 ###################
 
 if __name__ == "__main__":
-    app.run(debug=DEBUG_MODE, host='0.0.0.0', port='8080')
+    app.run(debug=DEBUG_MODE, host='0.0.0.0', port=8080)
     
