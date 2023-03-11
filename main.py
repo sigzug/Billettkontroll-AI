@@ -5,7 +5,7 @@ import pickle as pk
 
 from utils import *
 
-DEBUG_MODE: bool = False
+DEBUG_MODE: bool = True
 
 logging.basicConfig(level=logging.DEBUG,
                     filename='./logs/deploy.log', 
@@ -20,7 +20,10 @@ model = pk.load(open('./models/best_model.pkl', 'rb'))
 def home():
     linjer, fraList, tilList, fulltList = getCats()
     best_accuracy = load_accuracy()
-    return render_template('index.html', linje_list=linjer, fra_list=fraList, til_list=tilList, fullt_list=fulltList, best_accuracy=best_accuracy)
+    version = get_version()
+    date = get_date_best_model()
+
+    return render_template('index.html', linje_list=linjer, fra_list=fraList, til_list=tilList, fullt_list=fulltList, best_accuracy=best_accuracy, version=version, date=date)
     #return render_template('index.html')
     
 

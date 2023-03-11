@@ -1,5 +1,6 @@
 import pickle as pk
 import pandas as pd
+import json
 
 # Importing all category files from training
 linjeCat = pk.load(open('./categories/linjeCat.pkl', 'rb'))
@@ -200,3 +201,16 @@ def load_accuracy():
     best_accuracy = pk.load(open('./accuracy/best_accuracy.pkl', 'rb'))
     best_accuracy = f"{best_accuracy * 100 : .2f}"
     return best_accuracy
+
+
+def get_version() -> str:
+    with open("ver.txt", "r") as f:
+        version = f.read()
+    return version
+
+
+def get_date_best_model() -> str:
+    with open("./models/dates.json", "r") as f:
+        dates = json.load(f)
+        dates = dates["best_model"]
+        return f'{dates["day"]}.{dates["month"]}.{dates["year"]}'
