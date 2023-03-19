@@ -2,21 +2,30 @@ from collections import deque
 import pandas as pd
 
 
-data = {"Linje": ["r12", "r12"], 
+data = {"Linje": ["re10", "r12"], 
           "Vogn": [2, 7],
           "Fra": ["eidsvoll", "eidsvoll"], 
           "Til": ["oslo_s", "nationaltheateret"], 
          "Fullt?": ["ja", "nei"],
          "Sjekket?": ["ja", "ja"],
-         "Merknad": ["sjekket etter oslo lufthavn", "sjekket med en gang"],
+         "Merknad": ["penis pikk", "sjekket etter lillestrøm"],
          "Dag": [1, 10],
          "Måned": [3, 3],
          "Time": [6, 8],
          "Minutt": [52, 1]}
 
-
-r12_line_south = deque(["eidsvoll", "eidsvoll_verk", "oslo_lufthavn", "lillestrøm", "oslo_s", "nationaltheateret"])
-r12_line_north = reversed(r12_line_south)
+class LineMap:
+    re10_south = deque(["eidsvoll", "oslo_lufthavn", "lillestrøm", "oslo_s", "nationaltheateret"])
+    re10_north = reversed(re10_south)
+    
+    re11_south = deque(["eidsvoll", "eidsvoll_verk", "oslo_lufthavn", "lillestrøm", "oslo_s", "nationaltheateret"])
+    re11_north = reversed(re11_south)
+    
+    r12_south = deque(["eidsvoll", "eidsvoll_verk", "oslo_lufthavn", "lillestrøm", "oslo_s", "nationaltheateret"])
+    r12_north = reversed(r12_south)
+    
+    r14_south = deque(["kongsvinger", "skarnes", "årnes", "haga", "auli", "rånåsfoss", "blaker", "sørumsand", "svingen", "fetsund", "nerdrum", "lillestrøm", "oslo_s", "nationaltheateret"])
+    r14_north = reversed(r14_south)
 
 
 def line_creator(db: pd.DataFrame):
@@ -60,12 +69,24 @@ def recursive_line_creator(data: dict, line: deque, checked_stop: int, first_sto
 # db = db.reset_index()
 # print(db)
 
-def sjekket_etter(merknad: str, line: deque):
+def sjekket_etter(db: pd.DataFrame):
+    lines = []
+    for index, row in db.iterrows():
+        lines.append(find_line(row))
+        
+    db["Sjekket etter"] = db.apply(lambda x: sjekket_etter_column(x, lines), axis=1)
+    return db
+        
+       
+def sjekket_etter_column(merknad: pd.Series, lines: list[deque]):
+    line = lines[merknad._name]
+    merknad = merknad["Merknad"]
     merknad = merknad.lower()
     words = merknad.split()
     word_seq1 = ["sjekket", "etter"]
     word_seq2 = ["sjekket", "med", "en", "gang"]
     
+    checked = None
     for i in range(len(words) - len(word_seq1)):
         if words[i:i+len(word_seq1)] == word_seq1:
             checked = words[i + len(word_seq1)]
@@ -75,13 +96,58 @@ def sjekket_etter(merknad: str, line: deque):
             for i in range(len(line) - 1):
                 if line[i] == checked:
                     return i       
-            
         if words[i:i+len(word_seq2)] == word_seq2:
             checked = line[0]
-            return 0    
+            return 0
+    
+    if checked == None:
+        return -1
+        
        
+def find_line(row: pd.Series):
+    line_map = LineMap()
+    
+    if isinstance(row["Linje"], list) and isinstance(row["Fra"], list) and isinstance(row["Til"], list):
+        linje = row["Linje"][0]
+        fra = row["Fra"][0]
+        til = row["Til"][0]
+    else:
+        linje = row["Linje"]
+        fra = row["Fra"]
+        til = row["Til"]
+    
+    match linje:
+        case "re10":
+            south = line_map.re10_south
+            north = line_map.re10_north
+        case "re11":
+            south = line_map.re11_south
+            north = line_map.re11_north
+        case "r12":
+            south = line_map.r12_south
+            north = line_map.r12_north
+        case "r14":
+            south = line_map.r14_south
+            north = line_map.r14_north
+        case _:
+            return
+                
+                
+    for i in range(len(south)):
+        if south[i] == fra:
+            fra_i = i
+        if south[i] == til:
+            til_i = i
+            
+    if fra_i < til_i:
+        return south
+    else:
+        return north
+    
+
        
-def handle_recursion(db: pd.DataFrame, line: deque) -> pd.DataFrame:
+def handle_recursion(db: pd.DataFrame) -> pd.DataFrame:
+    db = sjekket_etter(db)
     db_dict = db.to_dict()
     
     # Find the maximum length of the value lists
@@ -93,16 +159,19 @@ def handle_recursion(db: pd.DataFrame, line: deque) -> pd.DataFrame:
         sliced_dict = {key: [db_dict[key][i]] for key in db_dict if i < len(db_dict[key])}
         slices.append(sliced_dict)
         
-    new_db = pd.DataFrame(db_dict)    
-    
+    new_db = pd.DataFrame(db_dict)
+   
     for slice in slices:
         checked = slice["Sjekket etter"][0]
-        first = next(i for i in range(len(line)) if line[i] == slice["Fra"][0])
-        last = next(i for i in range(len(line)) if line[i] == slice["Til"][0])
-        
-        new_dict = recursive_line_creator(slice, line, checked, first, last)
-        temp_db = pd.DataFrame(new_dict)
-        new_db = pd.concat([new_db, temp_db])
+        if checked != -1:
+            line = find_line(slice)
+            
+            first = next(i for i in range(len(line)) if line[i] == slice["Fra"][0])
+            last = next(i for i in range(len(line)) if line[i] == slice["Til"][0])
+            
+            new_dict = recursive_line_creator(slice, line, checked, first, last)
+            temp_db = pd.DataFrame(new_dict)
+            new_db = pd.concat([new_db, temp_db])
     
     new_db = new_db.drop_duplicates()
     new_db = new_db.reset_index()
@@ -112,10 +181,9 @@ def handle_recursion(db: pd.DataFrame, line: deque) -> pd.DataFrame:
     
     
 db = pd.DataFrame(data)
-db["Sjekket etter"] = db["Merknad"].apply(lambda x: sjekket_etter(x, r12_line_south))
 print(db)
 
 #db = db.apply(lambda x: handle_recursion(x, r12_line_south), axis=1)
-db = handle_recursion(db, r12_line_south)
+db = handle_recursion(db)
 print(f"\n{db}")
 
