@@ -22,16 +22,25 @@ class LineMap:
     re10_north = [{"name": "nationaltheateret", "timedelta": 0}, {"name": "oslo_s", "timedelta": 6}, 
                   {"name": "lillestrøm", "timedelta": 11}, {"name": "oslo_lufthavn", "timedelta": 14}, {"name": "eidsvoll", "timedelta": 9}]
     
+    
     re11_south = [{"name": "eidsvoll", "timedelta": 0}, {"name": "eidsvoll_verk", "timedelta": 5}, {"name": "oslo_lufthavn", "timedelta": 7}, 
                   {"name": "lillestrøm", "timedelta": 13}, {"name": "oslo_s", "timedelta": 13}, {"name": "nationaltheateret", "timedelta": 2}]
     
     re11_north = [{"name": "nationaltheateret", "timedelta": 0}, {"name": "oslo_s", "timedelta": 6}, {"name": "lillestrøm", "timedelta": 11}, 
                   {"name": "oslo_lufthavn", "timedelta": 14}, {"name": "eidsvoll_verk", "timedelta": 6}, {"name": "eidsvoll", "timedelta": 4}]
     
-    r12_south = deque(["eidsvoll", "eidsvoll_verk", "oslo_lufthavn", "lillestrøm", "oslo_s", "nationaltheateret"])
-    r12_north = reversed(r12_south)
     
-    r14_south = deque(["kongsvinger", "skarnes", "årnes", "haga", "auli", "rånåsfoss", "blaker", "sørumsand", "svingen", "fetsund", "nerdrum", "lillestrøm", "oslo_s", "nationaltheateret"])
+    r12_south = [{"name": "eidsvoll", "timedelta": 0}, {"name": "eidsvoll_verk", "timedelta": 5}, {"name": "oslo_lufthavn", "timedelta": 7}, 
+                  {"name": "lillestrøm", "timedelta": 13}, {"name": "oslo_s", "timedelta": 13}, {"name": "nationaltheateret", "timedelta": 2}]
+    
+    r12_north = [{"name": "nationaltheateret", "timedelta": 0}, {"name": "oslo_s", "timedelta": 6}, {"name": "lillestrøm", "timedelta": 11}, 
+                  {"name": "oslo_lufthavn", "timedelta": 14}, {"name": "eidsvoll_verk", "timedelta": 6}, {"name": "eidsvoll", "timedelta": 4}]
+    
+    
+    r14_south = [{"name": "kongsvinger", "timedelta": 0}, {"name": "skarnes", "timedelta": 13}, {"name": "årnes", "timedelta": 14}, {"name": "haga", "timedelta": 7},
+                 {"name": "auli", "timedelta": 3}, {"name": "rånåsfoss", "timedelta": 2}, {"name": "blaker", "timedelta": 3}, {"name": "sørumsand", "timedelta": 8},
+                 {"name": "svingen", "timedelta": 5}, {"name": "fetsund", "timedelta": 2}, {"name": "nerdrum", "timedelta": 2}, {"name": "lillestrøm", "timedelta": 8},
+                 {"name": "oslo_s", "timedelta": 13}, {"name": "nationaltheateret", "timedelta": 2}]
     r14_north = reversed(r14_south)
 
 
