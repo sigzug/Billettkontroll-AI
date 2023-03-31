@@ -1,242 +1,85 @@
-from collections import deque
-import pandas as pd
-from datetime import timedelta
+from training.utils.recursive_utils import *
 
 
-data = {"Linje": ["r13", "r14"],
-          "Vogn": [2, 7],
-          "Fra": ["eidsvoll", "skarnes"],
-          "Til": ["oslo_s", "auli"],
-         "Fullt?": ["ja", "nei"],
-         "Sjekket?": ["ja", "ja"],
-         "Merknad": ["sjekket med en gang", "sjekket etter haga"],
-         "Dag": [30, 30],
-         "Måned": [3, 3],
-         "Time": [15, 19],
-         "Minutt": [52, 54]}
+def extractDay(dt):
+    return dt.day
 
 
-class LineMap:
-    re10_south = [{"name": "eidsvoll", "timedelta": 0}, {"name": "oslo_lufthavn", "timedelta": 11},
-                  {"name": "lillestrøm", "timedelta": 13},{"name": "oslo_s", "timedelta": 13},
-                  {"name": "nationaltheateret", "timedelta": 2}]
-    
-    re10_north = [{"name": "nationaltheateret", "timedelta": 0}, {"name": "oslo_s", "timedelta": 6},
-                  {"name": "lillestrøm", "timedelta": 11}, {"name": "oslo_lufthavn", "timedelta": 14},
-                  {"name": "eidsvoll", "timedelta": 9}]
-    
-    
-    re11_south = [{"name": "eidsvoll", "timedelta": 0}, {"name": "eidsvoll_verk", "timedelta": 5},
-                  {"name": "oslo_lufthavn", "timedelta": 7}, {"name": "lillestrøm", "timedelta": 13},
-                  {"name": "oslo_s", "timedelta": 13}, {"name": "nationaltheateret", "timedelta": 2}]
-    
-    re11_north = [{"name": "nationaltheateret", "timedelta": 0}, {"name": "oslo_s", "timedelta": 6},
-                  {"name": "lillestrøm", "timedelta": 11}, {"name": "oslo_lufthavn", "timedelta": 14},
-                  {"name": "eidsvoll_verk", "timedelta": 6}, {"name": "eidsvoll", "timedelta": 4}]
-    
-    
-    r12_south = [{"name": "eidsvoll", "timedelta": 0}, {"name": "eidsvoll_verk", "timedelta": 5},
-                 {"name": "oslo_lufthavn", "timedelta": 7}, {"name": "lillestrøm", "timedelta": 13},
-                 {"name": "oslo_s", "timedelta": 13}, {"name": "nationaltheateret", "timedelta": 2}]
-    
-    r12_north = [{"name": "nationaltheateret", "timedelta": 0}, {"name": "oslo_s", "timedelta": 6},
-                 {"name": "lillestrøm", "timedelta": 11}, {"name": "oslo_lufthavn", "timedelta": 14},
-                 {"name": "eidsvoll_verk", "timedelta": 6}, {"name": "eidsvoll", "timedelta": 4}]
-    
-    
-    r14_south = [{"name": "kongsvinger", "timedelta": 0}, {"name": "skarnes", "timedelta": 13},
-                 {"name": "årnes", "timedelta": 14}, {"name": "haga", "timedelta": 7}, {"name": "auli", "timedelta": 3},
-                 {"name": "rånåsfoss", "timedelta": 2}, {"name": "blaker", "timedelta": 3},
-                 {"name": "sørumsand", "timedelta": 8}, {"name": "svingen", "timedelta": 5},
-                 {"name": "fetsund", "timedelta": 2}, {"name": "nerdrum", "timedelta": 2},
-                 {"name": "lillestrøm", "timedelta": 8}, {"name": "oslo_s", "timedelta": 13},
-                 {"name": "nationaltheateret", "timedelta": 2}]
-    
-    r14_north = [{"name": "nationaltheateret", "timedelta": 0}, {"name": "oslo_s", "timedelta": 6},
-                 {"name": "lillestrøm", "timedelta": 11}, {"name": "nerdrum", "timedelta": 5},
-                 {"name": "fetsund", "timedelta": 2}, {"name": "svingen", "timedelta": 2},
-                 {"name": "sørumsand", "timedelta": 6}, {"name": "blaker", "timedelta": 4},
-                 {"name": "rånåsfoss", "timedelta": 3}, {"name": "auli", "timedelta": 3},
-                 {"name": "haga", "timedelta": 2}, {"name": "årnes", "timedelta": 7},
-                 {"name": "skarnes", "timedelta": 19}, {"name": "kongsvinger", "timedelta": 14}]
-    
+def extractMonth(dt):
+    return dt.month
 
-def recursive_line_creator(data: dict, line: list[dict], checked_stop: int, first_stop: int, last_stop: int) -> dict:
-    """Recursive function that creates a line from a given stop to another given stop."""
-    if first_stop == last_stop:
-        return data
 
-    add_hour_flag = False
-    if first_stop <= checked_stop < last_stop:
-        for key, value in data.items():
-            if key == "Sjekket?":
-                value.append("ja")
-            elif key == "Fra":
-                value.append(line[first_stop]["name"])
-            elif key == "Til":
-                value.append(line[last_stop]["name"])
-            else:
-                value.append(value[0])
-    elif first_stop <= checked_stop and last_stop <= checked_stop:
-        for key, value in data.items():
-            if key == "Fra":
-                value.append(line[first_stop]["name"])
-            elif key == "Til":
-                value.append(line[last_stop]["name"])
-            elif key == "Sjekket?":
-                value.append("nei")
-            else:
-                value.append(value[0])
-        
-    data.update(recursive_line_creator(data, line, checked_stop, first_stop+1, last_stop))
-    data.update(recursive_line_creator(data, line, checked_stop, first_stop, last_stop-1))
-     
-    return data
-    
-        
-# new_data = recursive_line_creator(data, r12_line_south, 3, r12_line_south.index(data["Fra"][0]), r12_line_south.index(data["Til"][0]))
-# db = pd.DataFrame(new_data)
-# db = db.drop_duplicates()
-# db = db.reset_index()
-# print(db)
+def extractYear(dt):
+    return dt.year
 
-def sjekket_etter(db: pd.DataFrame):
-    lines = []
-    for index, row in db.iterrows():
-        lines.append(find_line(row))
-        
-    db["Sjekket etter"] = db.apply(lambda x: sjekket_etter_column(x, lines), axis=1)
-    return db
-        
-       
-def sjekket_etter_column(merknad: pd.Series, lines: list[deque]) -> int:
-    """Finds the index of the station that the train was checked after."""
-    line = lines[merknad._name]
-    if line is None:
-        return -1
 
-    merknad = merknad["Merknad"]
-    merknad = merknad.lower()
-    words = merknad.split()
-    word_seq1 = ["sjekket", "etter"]
-    word_seq2 = ["sjekket", "med", "en", "gang"]
-    
-    checked = None
-    for i in range(len(words) - len(word_seq1)):
-        if words[i:i+len(word_seq1)] == word_seq1:
-            checked = words[i + len(word_seq1)]
-            if checked == "oslo":
-                checked += f"_{words[i + len(word_seq1) + 1]}"
-            
-            for i in range(len(line) - 1):
-                if line[i]["name"] == checked:
-                    return i       
-        if words[i:i+len(word_seq2)] == word_seq2:
-            checked = line[0]["name"]
-            return 0
-    
-    if checked is None:
+def extractHour(x):
+    return x.hour
+
+
+def extractMinute(x):
+    return x.minute
+
+
+def strCleaner(x: str):
+    if isinstance(x, str):
+        x = x.lower()
+        x = x.replace(" ", "_")
+        x = x.strip("_")
+
+        if "ja" in x:
+            return "ja"
+
+        return x
+    else:
         return -1
 
 
-def find_line(row: pd.Series | dict) -> list[dict] | None:
-    """Finds the matching line from the LineMap class and returns the corresponding list of dicts."""
-    line_map = LineMap()
+def convert_linje_to_new(linje_inn):
+    match linje_inn:
+        case 'l14':
+            return 'r14'
+        case 'l12':
+            return 'r12'
+        case 'r11':
+            return 're11'
+        case 'r10':
+            return 're10'
+    return linje_inn
+
+
+# data = {"Linje": ["r13", "r14"],
+#           "Vogn": [2, 7],
+#           "Fra": ["eidsvoll", "skarnes"],
+#           "Til": ["oslo_s", "auli"],
+#          "Fullt?": ["ja", "nei"],
+#          "Sjekket?": ["ja", "ja"],
+#          "Merknad": [-1, -1],
+#          "Dag": [30, 30],
+#          "Måned": [3, 3],
+#          "Time": [15, 19],
+#          "Minutt": [52, 54]}
     
-    if isinstance(row["Linje"], list) and isinstance(row["Fra"], list) and isinstance(row["Til"], list):
-        linje = row["Linje"][0]
-        fra = row["Fra"][0]
-        til = row["Til"][0]
-    else:
-        linje = row["Linje"]
-        fra = row["Fra"]
-        til = row["Til"]
-    
-    match linje:
-        case "re10":
-            south = line_map.re10_south
-            north = line_map.re10_north
-        case "re11":
-            south = line_map.re11_south
-            north = line_map.re11_north
-        case "r12":
-            south = line_map.r12_south
-            north = line_map.r12_north
-        case "r14":
-            south = line_map.r14_south
-            north = line_map.r14_north
-        case _:
-            return None
+# db = pd.DataFrame(data)
 
-    fra_i = 0
-    til_i = 0
-    for i in range(len(south)):
-        if south[i]["name"] == fra:
-            fra_i = i
-        if south[i]["name"] == til:
-            til_i = i
-            
-    if fra_i < til_i:
-        return south
-    else:
-        return north
+db_main = pd.read_excel("/Users/sigurdskyrud/OneDrive/Dokumenter/Andre Dokumenter/Billettkontroll data/Billettkontroll data.xlsx")
+db_aanerud = pd.read_excel(
+    "/Users/sigurdskyrud/OneDrive/Dokumenter/Andre Dokumenter/Billettkontroll data/Billettkontroll data-aanerud.xlsx")
+db = pd.concat([db_main, db_aanerud])
+db = db.apply(lambda col: col.apply(lambda x: strCleaner(x) if isinstance(x, str) else x) if col.name != "Merknad" else col)
 
+db["Time"] = db["Klokke"].apply(lambda x: extractHour(x))
+db["Minutt"] = db["Klokke"].apply(lambda x: extractMinute(x))
+db = db.drop("Klokke", axis=1)
 
-def add_time(data: dict, line, start: int):
-    """Adds the sum of timedeltas from the start station to the current station to the time and minutes columns."""
-    fras = data["Fra"]
-    for i in range(len(fras)):
-        if fras[i] != line[start]["name"]:
-            fra_index = next(k for k, d in enumerate(line) if d['name'] == fras[i])
-            total_timedelta = sum(line[j]["timedelta"] for j in range(start, fra_index+1))
+db["Dag"] = db["Dato"].apply(lambda x: extractDay(x))
+db["Måned"] = db["Dato"].apply(lambda x: extractMonth(x))
+# db["År"] = db["Dato"].apply(lambda x: extractYear(x)) # Not relevant for the timescale I have
+db = db.drop("Dato", axis=1)
 
-            # Add the timedelta to minutes and handle overflow to hours
-            data["Minutt"][i] += total_timedelta
-            overflow_hours, remaining_minutes = divmod(data["Minutt"][i], 60)
-            data["Minutt"][i] = remaining_minutes
-            data["Time"][i] += overflow_hours
-    return data
+db["Linje"] = db["Linje"].apply(lambda x: convert_linje_to_new(x))
 
-
-def handle_recursion(db: pd.DataFrame) -> pd.DataFrame:
-    """Handles the recursion of the line creator."""
-    db = sjekket_etter(db)
-    db_dict = db.to_dict()
-    
-    # Find the maximum length of the value lists
-    max_length = max(len(value_list) for value_list in db_dict.values())
-
-    # Iterate through the indices and create new dictionaries for each index
-    slices = []
-    for i in range(max_length):
-        sliced_dict = {key: [db_dict[key][i]] for key in db_dict if i < len(db_dict[key])}
-        slices.append(sliced_dict)
-        
-    new_db = pd.DataFrame(db_dict)
-    dfs_to_concat = [new_db]
-
-    for slice in slices:
-        checked = slice["Sjekket etter"][0]
-        if checked != -1:
-            line = find_line(slice)
-            
-            first = next(i for i in range(len(line)) if line[i]["name"] == slice["Fra"][0])
-            last = next(i for i in range(len(line)) if line[i]["name"] == slice["Til"][0])
-            
-            new_dict = recursive_line_creator(slice, line, checked, first, last)
-            new_dict.update(add_time(new_dict, line, first))
-
-            temp_db = pd.DataFrame(new_dict)
-            dfs_to_concat.append(temp_db)
-
-    new_db = pd.concat(dfs_to_concat, ignore_index=True)
-    new_db = new_db.drop_duplicates()
-    new_db = new_db.reset_index(drop=True)
-    return new_db
-
-    
-db = pd.DataFrame(data)
-print(db)
 db = handle_recursion(db)
 print(f"\n{db.to_string()}")
+db.to_excel("/Users/sigurdskyrud/Desktop/pd_data.xlsx", index=False)
 

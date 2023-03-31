@@ -1,20 +1,22 @@
 import logging
+import os
 
 from flask import Flask, Response, request, render_template, redirect, url_for
-import pickle as pk
 
-from utils import *
+from training.utils.utils import *
 
-DEBUG_MODE: bool = True
+
+DEBUG_MODE = False
 
 logging.basicConfig(level=logging.DEBUG,
-                    filename='./logs/deploy.log', 
+                    filename='./logs/deploy.log',
                     filemode='w', 
                     format='%(name)s - %(levelname)s - %(message)s') 
 
 app = Flask(__name__)
 
-model = pk.load(open('./models/best_model.pkl', 'rb'))   
+model = pk.load(open('./models/best_model.pkl', 'rb'))
+
 
 @app.route('/')
 def home():
@@ -43,6 +45,7 @@ def predict():
 
     prediction = model.predict(tester)
 
+    sjekketCat = get_sjekket_cat()
     ja = findCatCode(sjekketCat, 'ja')
     #nei = findCatCode(sjekketCat, 'nei')
 
