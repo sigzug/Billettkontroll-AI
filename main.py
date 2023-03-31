@@ -1,26 +1,31 @@
 import logging
+import os
 
 from flask import Flask, Response, request, render_template, redirect, url_for
-import pickle as pk
 
-from utils import *
+from training.utils.utils import *
 
-DEBUG_MODE: bool = False
+
+DEBUG_MODE = False
 
 logging.basicConfig(level=logging.DEBUG,
-                    filename='./logs/deploy.log', 
+                    filename='./logs/deploy.log',
                     filemode='w', 
                     format='%(name)s - %(levelname)s - %(message)s') 
 
 app = Flask(__name__)
 
-model = pk.load(open('./models/best_model.pkl', 'rb'))   
+model = pk.load(open('./models/best_model.pkl', 'rb'))
+
 
 @app.route('/')
 def home():
     linjer, fraList, tilList, fulltList = getCats()
     best_accuracy = load_accuracy()
-    return render_template('index.html', linje_list=linjer, fra_list=fraList, til_list=tilList, fullt_list=fulltList, best_accuracy=best_accuracy)
+    version = get_version()
+    date = get_date_best_model()
+
+    return render_template('index.html', linje_list=linjer, fra_list=fraList, til_list=tilList, fullt_list=fulltList, best_accuracy=best_accuracy, version=version, date=date)
     #return render_template('index.html')
     
 
@@ -40,6 +45,7 @@ def predict():
 
     prediction = model.predict(tester)
 
+    sjekketCat = get_sjekket_cat()
     ja = findCatCode(sjekketCat, 'ja')
     #nei = findCatCode(sjekketCat, 'nei')
 
