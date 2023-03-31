@@ -3,8 +3,12 @@ import pandas as pd
 import json
 import os
 
-_path = os.path.dirname(os.path.abspath(__file__))
-PATH = _path.split('Billettkontroll-AI')[0] + 'Billettkontroll-AI/'
+
+path__ = os.getcwd()
+if "/app" == path__:
+    PATH = path__+"/"
+else:
+    PATH = path__.split('Billettkontroll-AI')[0] + 'Billettkontroll-AI/'
 
 def get_linje_cat():
     return pk.load(open(PATH + 'categories/linjeCat.pkl', 'rb'))
