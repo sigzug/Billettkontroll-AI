@@ -48,7 +48,6 @@ def recursive_line_creator(data: dict, line: list[dict], checked_stop: int, firs
     if first_stop == last_stop:
         return data
 
-    add_hour_flag = False
     if first_stop <= checked_stop < last_stop:
         for key, value in data.items():
             if key == "Sjekket?":
@@ -86,8 +85,22 @@ def sjekket_etter(db: pd.DataFrame):
 
 
 def sjekket_etter_column(series: pd.Series, lines: list[dict]) -> int:
-    """Finds the index of the station that the train was checked after."""
+    def contains_subsequence(words: list[str], subseq: list[str]) -> bool:
+        """Checks if the list 'words' contains the subsequence 'subseq' in order."""
+        subseq_index = 0
+        for word in words:
+            if word == subseq[subseq_index]:
+                subseq_index += 1
+                if subseq_index == len(subseq):
+                    return True
+        return False
+
     line = lines[series._name]
+
+    if series["Sjekket?"] == "nei":
+        checked = series["Til"]
+        return next((i for i, x in enumerate(line) if x["name"] == checked), -1)
+
     merknad = series["Merknad"]
     if line is None or merknad == -1 or not isinstance(merknad, str):
         return -1
@@ -97,20 +110,32 @@ def sjekket_etter_column(series: pd.Series, lines: list[dict]) -> int:
     words = merknad.split()
     word_seq1 = ["sjekket", "etter"]
     word_seq2 = ["sjekket", "med", "en", "gang"]
+    word_seq3 = ["sjekket", "før"]
+    word_seq4 = ["sjekket", "på"]
 
     checked = None
-    for i in range(len(words) - len(word_seq1)):
-        if words[i:i + len(word_seq1)] == word_seq1:
-            checked = words[i + len(word_seq1)]
-            if checked == "oslo":
-                checked += f"_{words[i + len(word_seq1) + 1]}"
+    if contains_subsequence(words, word_seq1) or contains_subsequence(words, word_seq4):
+        try:
+            checked_index = words.index(word_seq1[-1]) + 1
+        except:
+            checked_index = words.index(word_seq4[-1]) + 1
+        checked = words[checked_index]
 
-            for j in range(len(line) - 1):
-                if line[j]["name"] == checked:
-                    return j
-        if words[i:i + len(word_seq2)] == word_seq2:
-            checked = line[0]["name"]
-            return 0
+        if checked == "oslo":
+            checked += f"_{words[checked_index + 1]}"
+
+        return next((i for i, x in enumerate(line) if x["name"] == checked), -1)
+    if contains_subsequence(words, word_seq3):
+        checked_index = words.index(word_seq3[-1]) + 1
+        checked = words[checked_index]
+
+        if checked == "oslo":
+            checked += f"_{words[checked_index + 1]}"
+
+        return next((i for i, x in enumerate(line) if x["name"] == checked), -1) - 1
+    if contains_subsequence(words, word_seq2):
+        checked = line[0]["name"]
+        return 0
 
     if checked is None:
         return -1
