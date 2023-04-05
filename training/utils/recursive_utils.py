@@ -95,18 +95,20 @@ def sjekket_etter_column(series: pd.Series, lines: list[dict]) -> int:
                     return True
         return False
 
+    merknad = series["Merknad"]
+    merknad = str(merknad)
+    if merknad is not "nan" or merknad is not None:
+        merknad = merknad.lower()
+        merknad = merknad.replace(".", "")
+
     line = lines[series._name]
+    if line is None or merknad == -1 or not isinstance(merknad, str):
+        return -1
 
     if series["Sjekket?"] == "nei":
         checked = series["Til"]
         return next((i for i, x in enumerate(line) if x["name"] == checked), -1)
 
-    merknad = series["Merknad"]
-    if line is None or merknad == -1 or not isinstance(merknad, str):
-        return -1
-
-    merknad = merknad.lower()
-    merknad = merknad.replace(".", "")
     words = merknad.split()
     word_seq1 = ["sjekket", "etter"]
     word_seq2 = ["sjekket", "med", "en", "gang"]
