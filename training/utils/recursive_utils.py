@@ -2,21 +2,47 @@ import pandas as pd
 
 
 class LineMap:
-    re10_south = [{"name": "eidsvoll", "timedelta": 0}, {"name": "oslo_lufthavn", "timedelta": 11},
-                  {"name": "lillestrøm", "timedelta": 13}, {"name": "oslo_s", "timedelta": 13},
-                  {"name": "nationaltheatret", "timedelta": 2}]
+    re10_south = [{"name": "lillehammer", "timedelta": 0}, {"name": "moelv", "timedelta": 26}, 
+                  {"name": "brummundal", "timedelta": 16}, {"name": "hamar", "timedelta": 18}, 
+                  {"name": "stange", "timedelta": 9}, {"name": "tangen", "timedelta": 13},
+                  {"name": "eidsvoll", "timedelta": 23}, {"name": "oslo_lufthavn", "timedelta": 11}, 
+                  {"name": "lillestrøm", "timedelta": 13}, {"name": "oslo_s", "timedelta": 13}, 
+                  {"name": "nationaltheatret", "timedelta": 2}, {"name": "skøyen", "timedelta": 4},
+                  {"name": "lysaker", "timedelta": 4}, {"name": "sandvika", "timedelta": 5}, 
+                  {"name": "asker", "timedelta": 6}, {"name": "brakerøya", "timedelta": 9}]
 
-    re10_north = [{"name": "nationaltheatret", "timedelta": 0}, {"name": "oslo_s", "timedelta": 6},
-                  {"name": "lillestrøm", "timedelta": 11}, {"name": "oslo_lufthavn", "timedelta": 14},
-                  {"name": "eidsvoll", "timedelta": 9}]
+    re10_north = [{"name": "brakerøya", "timedelta": 0}, {"name": "asker", "timedelta": 10},
+                  {"name": "sandvika", "timedelta": 6}, {"name": "lysaker", "timedelta": 6},
+                  {"name": "skøyen", "timedelta": 3}, {"name": "nationaltheatret", "timedelta": 4}, 
+                  {"name": "oslo_s", "timedelta": 6}, {"name": "lillestrøm", "timedelta": 11}, 
+                  {"name": "oslo_lufthavn", "timedelta": 14}, {"name": "eidsvoll", "timedelta": 10},
+                  {"name": "tangen", "timedelta": 20}, {"name": "stange", "timedelta": 9},
+                  {"name": "hamar", "timedelta": 14}, {"name": "brummundal", "timedelta": 11},
+                  {"name": "moelv", "timedelta": 12}, {"name": "lillehammer", "timedelta": 25}]
 
     re11_south = [{"name": "eidsvoll", "timedelta": 0}, {"name": "eidsvoll_verk", "timedelta": 5},
                   {"name": "oslo_lufthavn", "timedelta": 7}, {"name": "lillestrøm", "timedelta": 13},
-                  {"name": "oslo_s", "timedelta": 13}, {"name": "nationaltheatret", "timedelta": 2}]
+                  {"name": "oslo_s", "timedelta": 13}, {"name": "nationaltheatret", "timedelta": 2},
+                  {"name": "skøyen", "timedelta": 4}, {"name": "lysaker", "timedelta": 4},
+                  {"name": "sandvika", "timedelta": 5}, {"name": "asker", "timedelta": 6},
+                  {"name": "drammen", "timedelta": 14}, {"name": "sande", "timedelta": 12},
+                  {"name": "holmestrand", "timedelta": 7}, {"name": "skoppum", "timedelta": 8},
+                  {"name": "tønsberg", "timedelta": 11}, {"name": "stokke", "timedelta": 15},
+                  {"name": "torp", "timedelta": 5}, {"name": "sandefjord", "timedelta": 6},
+                  {"name": "larvik", "timedelta": 15}, {"name": "porsgrunn", "timedelta": 12},
+                  {"name": "skien", "timedelta": 8}]
 
-    re11_north = [{"name": "nationaltheatret", "timedelta": 0}, {"name": "oslo_s", "timedelta": 6},
-                  {"name": "lillestrøm", "timedelta": 11}, {"name": "oslo_lufthavn", "timedelta": 14},
-                  {"name": "eidsvoll_verk", "timedelta": 6}, {"name": "eidsvoll", "timedelta": 4}]
+    re11_north = [{"name": "skien", "timedelta": 0}, {"name": "porsgrunn", "timedelta": 8},
+                  {"name": "larvik", "timedelta": 15}, {"name": "sandefjord", "timedelta": 15},
+                  {"name": "torp", "timedelta": 4}, {"name": "stokke", "timedelta": 5},
+                  {"name": "tønsberg", "timedelta": 12}, {"name": "skoppum", "timedelta": 10},
+                  {"name": "holmestrand", "timedelta": 8}, {"name": "sande", "timedelta": 6},
+                  {"name": "drammen", "timedelta": 15}, {"name": "asker", "timedelta": 12},
+                  {"name": "sandvika", "timedelta": 6}, {"name": "lysaker", "timedelta": 6},
+                  {"name": "skøyen", "timedelta": 3}, {"name": "nationaltheatret", "timedelta": 0}, 
+                  {"name": "oslo_s", "timedelta": 6}, {"name": "lillestrøm", "timedelta": 11}, 
+                  {"name": "oslo_lufthavn", "timedelta": 14}, {"name": "eidsvoll_verk", "timedelta": 6}, 
+                  {"name": "eidsvoll", "timedelta": 4}]
 
     r12_south = [{"name": "eidsvoll", "timedelta": 0}, {"name": "eidsvoll_verk", "timedelta": 5},
                  {"name": "oslo_lufthavn", "timedelta": 7}, {"name": "lillestrøm", "timedelta": 13},
