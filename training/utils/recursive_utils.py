@@ -151,6 +151,9 @@ def sjekket_etter_column(series: pd.Series, lines: list[dict]) -> int:
 
         if checked == "oslo":
             checked += f"_{words[checked_index + 1]}"
+        elif checked == "eidsvoll":
+            if (len(words) > checked_index + 1) and (words[checked_index + 1] == "verk"):
+                checked += "_verk"
 
         return next((i for i, x in enumerate(line) if x["name"] == checked), -1)
     if contains_subsequence(words, word_seq3):
