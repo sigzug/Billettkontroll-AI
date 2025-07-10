@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.DEBUG,
 
 app = Flask(__name__)
 
-model = pk.load(open('./models/best_model.pkl', 'rb'))
+model = pk.load(open('models/best_model.pkl', 'rb'))
 
 
 @app.route('/')
